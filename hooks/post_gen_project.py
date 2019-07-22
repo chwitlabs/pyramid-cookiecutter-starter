@@ -82,28 +82,8 @@ def delete_other_files(directory, current_prefix, rm_prefixes):
 
 
 def display_actions_message():
-    WIN = sys.platform.startswith('win')
-
-    venv = 'env'
-    if WIN:
-        venv_cmd = 'py -3 -m venv'
-        venv_bin = os.path.join(venv, 'Scripts')
-    else:
-        venv_cmd = 'python3 -m venv'
-        venv_bin = os.path.join(venv, 'bin')
-
     env_setup = dict(
         separator='=' * 79,
-        venv=venv,
-        venv_cmd=venv_cmd,
-        pip_cmd=os.path.join(venv_bin, 'pip'),
-        pytest_cmd=os.path.join(venv_bin, 'pytest'),
-        pserve_cmd=os.path.join(venv_bin, 'pserve'),
-        {%- if cookiecutter.backend == 'sqlalchemy' %}
-        alembic_cmd=os.path.join(venv_bin, 'alembic'),
-        init_cmd=os.path.join(
-            venv_bin, 'initialize_{{ cookiecutter.repo_name }}_db'),
-        {% endif %}
     )
     msg = dedent(
         """
@@ -115,33 +95,30 @@ def display_actions_message():
         Welcome to Pyramid.  Sorry for the convenience.
         %(separator)s
 
+        Install poetry.
+            curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+
         Change directory into your newly created project.
             cd {{ cookiecutter.repo_name }}
 
-        Create a Python virtual environment.
-            %(venv_cmd)s %(venv)s
-
-        Upgrade packaging tools.
-            %(pip_cmd)s install --upgrade pip setuptools
-
-        Install the project in editable mode with its testing requirements.
-            %(pip_cmd)s install -e ".[testing]"
+        Install the project in editable mode with its development dependencies.
+            poetry install
 
         {% if cookiecutter.backend == 'sqlalchemy' -%}
         Migrate the database using Alembic.
             # Generate your first revision.
-            %(alembic_cmd)s -c development.ini revision --autogenerate -m "init"
+            poetry run alembic -c development.ini revision --autogenerate -m "init"
             # Upgrade to that revision.
-            %(alembic_cmd)s -c development.ini upgrade head
+            poetry run alembic -c development.ini upgrade head
             # Load default data.
-            %(init_cmd)s development.ini
+            poetry run initialize_{{ cookiecutter.repo_name }}_db development.ini
 
         {% endif -%}
         Run your project's tests.
-            %(pytest_cmd)s
+            poetry run pytest
 
         Run your project.
-            %(pserve_cmd)s development.ini
+            poetry run pserve development.ini
         """ % env_setup)
     print(msg)
 

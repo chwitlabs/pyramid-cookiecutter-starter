@@ -19,6 +19,7 @@ Requirements
 
 * Python 3.4+
 * `cookiecutter <https://cookiecutter.readthedocs.io/en/latest/installation.html>`_
+* `poetry <https://poetry.eustace.io/docs/>`_
 
 Versions
 --------
@@ -45,27 +46,22 @@ Usage
 
        $ cookiecutter gh:Pylons/pyramid-cookiecutter-starter --checkout master
 
-2. Finish configuring the project by creating a virtual environment and installing your new project. These steps are output as part of the cookiecutter command above and are slightly different for Windows.
+2. Finish configuring the project by installing your new project. These steps are output as part of the cookiecutter command above.
 
    .. code-block:: bash
 
        # Change directory into your newly created project.
        $ cd myproj
-       # Create a virtual environment...
-       $ python3 -m venv env
-       # ...where we upgrade packaging tools...
-       $ env/bin/pip install --upgrade pip setuptools
-       # ...and into which we install our project and its testing requirements.
-       $ env/bin/pip install -e ".[testing]"
+       $ poetry install
 
 3. Run your project's tests.
 
    .. code-block:: bash
 
-       $ env/bin/pytest
+       $ poetry run pytest
 
 4. Run your project.
 
    .. code-block:: bash
 
-       $ env/bin/pserve development.ini
+       $ poetry run pserve development.ini

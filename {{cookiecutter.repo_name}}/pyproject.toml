@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "{{ cookiecutter.repo_name }}"
+version = "0.0"
+description = "{{ cookiecutter.project_name }}"
+authors = ["author <author_email>"]
+classifiers = [
+  "Programming Language :: Python",
+  "Framework :: Pyramid",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+]
+keywords = ["web", "pyramid", "pylons"]
+readme = "README.txt"
+
+[tool.poetry.dependencies]
+python = "^3.4"
+plaster_pastedeploy = "*"
+pyramid = "*"
+pyramid_{{ cookiecutter.template_language }} = "*"
+pyramid_debugtoolbar = "*"
+waitress = "*"
+{%- if cookiecutter.backend == 'sqlalchemy' %}
+alembic = "*"
+pyramid_retry = "*"
+pyramid_tm = "*"
+SQLAlchemy = "*"
+transaction = "*"
+"zope.sqlalchemy" = "*"
+{%- elif cookiecutter.backend == 'zodb' %}
+pyramid_retry = "*"
+pyramid_tm = "*"
+pyramid_zodbconn = "*"
+transaction = "*"
+ZODB3 = "*"
+{%- endif %}
+
+[tool.poetry.dev-dependencies]
+WebTest = "*"
+pytest = "*"
+pytest-cov = "*"
+
+[tool.poetry.plugins."paste.app_factory"]
+main = "{{ cookiecutter.repo_name }}:main"
+
+{%- if cookiecutter.backend == 'sqlalchemy' %}
+[tool.poetry.scripts]
+initialize_{{ cookiecutter.repo_name }}_db = "{{ cookiecutter.repo_name }}.scripts.initialize_db:main"
+{%- endif %}
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
